@@ -1,0 +1,30 @@
+[
+  {
+    "naam": "DDWV vinkjes",
+    "spreadsheetId":"qkeJolaUXAY8LrpibcgMrJwe4A2FddW5KMwWd5ZeBqvv7Cpz",
+    "tabName":"Form responses 1",
+    "emailKolom":"B",
+    "statusKolom":"P",
+    "competentie":"416"
+  },
+  {
+    "naam": "Arcus vinkjes",
+    "spreadsheetId":"3LR83lpmbClSysemeU04awrj9Xjp7V4NJTXZ8vaU-Rm",
+    "tabName":"Formulierreacties 1",
+    "emailKolom":"B",
+    "statusKolom":"AV",
+    "competentie":415,
+    "scoreKolom":"C",
+    "minScore":36
+  },
+  {
+    "naam": "XLT vinkjes",
+    "spreadsheetId":"42s2VJZx0N534MoEqlMUPBYzxOw2IjCVO_zH0acw",
+    "tabName":"Form responses 1",
+    "emailKolom":"B",
+    "statusKolom":"AU",
+    "competentie":414,
+    "scoreKolom":"C",
+    "minScore":38
+  }
+]
