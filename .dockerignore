@@ -1,0 +1,16 @@
+node_modules
+.git
+.idea
+.DS_Store
+README.md
+
+.env
+.env.example
+sheets.json
+sheets.json.example
+.sheet2vinkje.json
+.sheet2vinkje.json.example
+.helios.account.json
+.helios.account.json.example
+Dockerfile
+.dockerignore
