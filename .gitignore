@@ -151,3 +151,5 @@ vite.config.ts.timestamp-*
 .DS_Store
 src/.DS_Store
 templates/.DS_Store
+/helios.account.json
+/sheet2vinkje.json
