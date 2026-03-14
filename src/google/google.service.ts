@@ -8,6 +8,12 @@ export class GoogleService {
   private credentials;
 
   constructor() {
+    console.log("GOOGLE_PROJECT_ID:", process.env.GOOGLE_PROJECT_ID);
+    console.log("GOOGLE_ADMIN_EMAIL:", process.env.GOOGLE_ADMIN_EMAIL);
+    console.log("GOOGLE_CREDENTIALS_PATH:", process.env.GOOGLE_CREDENTIALS_PATH);
+    console.log("GOOGLE_SHEETS_CONFIG:", process.env.GOOGLE_SHEETS_CONFIG);
+    console.log("VERZENDEN_EMAIL:", process.env.VERZENDEN_EMAIL ? 'true' : 'false');
+
     this.credentials = fs.existsSync(process.env.GOOGLE_CREDENTIALS_PATH!)
       ? JSON.parse(
           fs.readFileSync(process.env.GOOGLE_CREDENTIALS_PATH!, {
