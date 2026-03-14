@@ -6,18 +6,9 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-
-  console.log(`Server listening on port ${port}`);
-
-
-
-
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
   await app.listen(port);
   // eslint-disable-next-line no-console
-
-
-
 }
 bootstrap();
