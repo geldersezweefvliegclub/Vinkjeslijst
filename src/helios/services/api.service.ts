@@ -16,6 +16,7 @@ export class APIService {
     private BearerToken: string | undefined = undefined;
 
     constructor() {
+       console.log("HELIOS_CREDENTIAL_FILE:", process.env.HELIOS_CREDENTIAL_FILE);
        const helios = fs.existsSync(HELIOS_CREDENTIAL_FILE) ? JSON.parse(fs.readFileSync(HELIOS_CREDENTIAL_FILE,{encoding: 'utf8'})) : undefined
 
        if (!helios)
