@@ -4,7 +4,9 @@ import {firstValueFrom, Observable} from 'rxjs';
 
 @Injectable()
 export class HeliosService {
-  constructor(private readonly http: HttpService) {}
+  constructor(private readonly http: HttpService) {
+    console.log("HELIOS_CREDENTIAL_FILE:", process.env.HELIOS_CREDENTIAL_FILE);
+  }
 
   private sleep(ms: number) {
     return new Promise((r) => setTimeout(r, ms));
