@@ -2,8 +2,6 @@ import {HttpCode, HttpStatus, Injectable} from '@nestjs/common';
 import {GoogleService} from '../google/google.service';
 import {HeliosService} from '../helios/helios.service';
 import {VerwerkDto} from "./dto/verwerk.dto";
-import {LoginService} from "../helios/services/login.service";
-import {LedenService} from "../helios/services/leden.service";
 import {ProgressieService} from "../helios/services/progressie.service";
 import * as fs from "node:fs";
 
@@ -22,8 +20,6 @@ export class VerwerkService
    constructor(
       private readonly google: GoogleService,
       private readonly helios: HeliosService,
-      private loginService: LoginService,
-      private ledenService: LedenService,
       private progessieService: ProgressieService
    )
    {
@@ -34,7 +30,7 @@ export class VerwerkService
       return new Promise((r) => setTimeout(r, ms));
    }
 
-   async sheet2Vinkje(input: VerwerkDto): Promise<any>
+   async sheet2Vinkje(leden: any, input: VerwerkDto): Promise<any>
    {
       const tabTitle = input.tabName || await this.google.getFirstTabTitle(input.spreadsheetId);
 
@@ -91,9 +87,6 @@ export class VerwerkService
 
       const scoreRange = (input.scoreKolom === undefined) ? undefined :  `${input.scoreKolom}2:${input.scoreKolom}${rows}`;
       const scoreArray = (scoreRange === undefined) ? undefined : await this.google.getCells(input.spreadsheetId, tabTitle, scoreRange);
-
-      await this.loginService.login();
-      const leden = await this.ledenService.getLeden();
 
       // logo tbv uitsturen email.
       const base64img = fs.readFileSync('./templates/gezc-logo.png', {encoding: 'base64'});

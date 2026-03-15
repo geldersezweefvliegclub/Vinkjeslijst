@@ -3,12 +3,16 @@ import { VerwerkDto } from './dto/verwerk.dto';
 import {myResponse, VerwerkService} from './verwerk.service';
 import fs from "node:fs";
 import {GoogleService} from "../google/google.service";
+import {LedenService} from "../helios/services/leden.service";
+import {LoginService} from "../helios/services/login.service";
 
 @Controller()
 export class VerwerkController
 {
    sheets: VerwerkDto[] = []
   constructor(private readonly google: GoogleService,
+              private loginService: LoginService,
+              private ledenService: LedenService,
               private readonly svc: VerwerkService) {
      const fileContent = fs.readFileSync(process.env.GOOGLE_SHEETS_CONFIG!, "utf-8");
      this.sheets = JSON.parse(fileContent);
@@ -19,10 +23,13 @@ export class VerwerkController
   async process(): Promise<any> {
      var response : myResponse[] = [];
 
+     await this.loginService.login();
+     const leden = await this.ledenService.getLeden();
+
      for (const sheet of this.sheets)
      {
         console.log(sheet.naam)
-        const r = await this.svc.sheet2Vinkje(sheet);
+        const r = await this.svc.sheet2Vinkje(leden, sheet);
         r.naam = sheet.naam;
 
         response.push(r);

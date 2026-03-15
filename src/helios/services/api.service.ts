@@ -43,7 +43,7 @@ export class APIService {
         }
 
         const heliosUrl  = this.URL + url;
-        this.logger.log(`GET ${heliosUrl}`);
+        //this.logger.log(`GET ${heliosUrl}`);
 
         const response = await fetch(heliosUrl, {
             method: 'GET',
