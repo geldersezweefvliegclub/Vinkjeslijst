@@ -115,16 +115,22 @@ export class VerwerkService
          }
 
          const email = emailArray![row][0];
+         console.log(`cel: ${input.emailKolom}${row + 1}  email=${email}`);
+
          if (!email)
          {
-            response.details.push(`Geen email op rij ${row+1}`);
+            const msg = `Geen email op rij ${row+1}`
+            console.log(msg);
+            response.details.push(msg);
             await this.google.setCell(input.spreadsheetId, tabTitle, input.statusKolom, row + 2, "Geen email");
             continue;
          }
 
          if (!emailRegex.test(email))
          {
-            response.details.push(`Geen correct email adres op rij ${row+1}`);
+            const msg = `Geen correct email adres op rij ${row + 1}`
+            console.log(msg);
+            response.details.push(msg);
             console.log(`Onjuist email formaat, cel:${input.emailKolom}${row + 1} :${email}`);
             continue;
          }
@@ -204,6 +210,7 @@ export class VerwerkService
             if (errorMsg)
             {
                await this.google.setCell(input.spreadsheetId, tabTitle, input.statusKolom, row + 2, errorMsg.msg);
+               console.log(errorMsg.log);
                response.details.push(errorMsg.log);
             }
             else
@@ -227,8 +234,6 @@ export class VerwerkService
          {
             console.log(e)
          }
-
-         console.log(`cel: ${input.emailKolom}${row + 1}  email=${email}`);
          await this.sleep(1000);
       }
       response.bericht = `${aantalVerwerkt} items verwerkt`
