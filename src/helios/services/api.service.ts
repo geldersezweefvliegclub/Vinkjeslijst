@@ -3,7 +3,7 @@ import {ConfigService} from "@nestjs/config";
 import {HttpException, HttpStatus, Injectable, Logger} from "@nestjs/common";
 import fs from "node:fs";
 
-export const HELIOS_CREDENTIAL_FILE = ".helios.account.json";
+export const HELIOS_CREDENTIAL_FILE = "helios.account.json";
 
 export interface KeyValueArray {
    [key: string]: string | number | boolean
@@ -16,8 +16,9 @@ export class APIService {
     private BearerToken: string | undefined = undefined;
 
     constructor() {
-       console.log("HELIOS_CREDENTIAL_FILE:", process.env.HELIOS_CREDENTIAL_FILE);
-       const helios = fs.existsSync(HELIOS_CREDENTIAL_FILE) ? JSON.parse(fs.readFileSync(HELIOS_CREDENTIAL_FILE,{encoding: 'utf8'})) : undefined
+       const file = process.env.HELIOS_CREDENTIAL_FILE ? process.env.HELIOS_CREDENTIAL_FILE : HELIOS_CREDENTIAL_FILE;
+       console.log("HELIOS_CREDENTIAL_FILE:", file);
+       const helios = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file,{encoding: 'utf8'})) : undefined
 
        if (!helios)
        {
