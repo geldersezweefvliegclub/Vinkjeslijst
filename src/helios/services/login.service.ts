@@ -21,7 +21,6 @@ export class LoginService  {
         const HeliosConfig = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file,{encoding: 'utf8'})) : undefined
         const gebruikersnaam = HeliosConfig.username;
         const wachtwoord = HeliosConfig.password;
-        const bypassToken = this.dayOfYear() + HeliosConfig.token;
 
         const token = createHash("sha1").update(HeliosConfig.token + wachtwoord, "utf8").digest("hex");
 

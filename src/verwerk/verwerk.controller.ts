@@ -1,4 +1,4 @@
-import {Body, Controller, HttpCode, Get, Param, HttpStatus} from '@nestjs/common';
+import {Body, Controller, HttpCode, Get, Param, HttpStatus, Logger} from '@nestjs/common';
 import { VerwerkDto } from './dto/verwerk.dto';
 import {myResponse, VerwerkService} from './verwerk.service';
 import fs from "node:fs";
@@ -9,6 +9,8 @@ import {LoginService} from "../helios/services/login.service";
 @Controller()
 export class VerwerkController
 {
+   private readonly logger = new Logger(VerwerkController.name);
+
    sheets: VerwerkDto[] = []
   constructor(private readonly google: GoogleService,
               private loginService: LoginService,
@@ -28,7 +30,7 @@ export class VerwerkController
 
      for (const sheet of this.sheets)
      {
-        console.log(sheet.naam)
+        this.logger.verbose(`Processing sheet ${sheet.naam} (${sheet.spreadsheetId})...`);
         const r = await this.svc.sheet2Vinkje(leden, sheet);
         r.naam = sheet.naam;
 

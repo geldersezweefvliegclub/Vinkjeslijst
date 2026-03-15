@@ -1,18 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import {Injectable, Logger} from '@nestjs/common';
 import { google, sheets_v4, gmail_v1 } from 'googleapis';
 import { JWT } from 'google-auth-library';
 import * as fs from 'node:fs';
 
 @Injectable()
 export class GoogleService {
+  private readonly logger = new Logger(GoogleService.name);
   private credentials;
 
   constructor() {
-    console.log("GOOGLE_PROJECT_ID:", process.env.GOOGLE_PROJECT_ID);
-    console.log("GOOGLE_ADMIN_EMAIL:", process.env.GOOGLE_ADMIN_EMAIL);
-    console.log("GOOGLE_CREDENTIALS_PATH:", process.env.GOOGLE_CREDENTIALS_PATH);
-    console.log("GOOGLE_SHEETS_CONFIG:", process.env.GOOGLE_SHEETS_CONFIG);
-    console.log("VERZENDEN_EMAIL:", process.env.VERZENDEN_EMAIL ? 'true' : 'false');
+    this.logger.log("GOOGLE_PROJECT_ID:", process.env.GOOGLE_PROJECT_ID);
+    this.logger.log("GOOGLE_ADMIN_EMAIL:", process.env.GOOGLE_ADMIN_EMAIL);
+    this.logger.log("GOOGLE_CREDENTIALS_PATH:", process.env.GOOGLE_CREDENTIALS_PATH);
+    this.logger.log("GOOGLE_SHEETS_CONFIG:", process.env.GOOGLE_SHEETS_CONFIG);
+    this.logger.log("VERZENDEN_EMAIL:", process.env.VERZENDEN_EMAIL ? 'true' : 'false');
 
     this.credentials = fs.existsSync(process.env.GOOGLE_CREDENTIALS_PATH!)
       ? JSON.parse(
@@ -151,11 +152,11 @@ export class GoogleService {
     bodyText: string;
   }) {
     if (process.env.VERZENDEN_EMAIL === 'false') {
-      console.log(`Verzenden email staat UIT, to: ${to}`);
+      this.logger.debug(`Verzenden email staat UIT, to: ${to}`);
       return;
     }
     if (this.credentials === undefined) {
-      console.log('Google credentials not found, skipping email.');
+      this.logger.warn('Google credentials not found, skipping email.');
       return;
     }
 

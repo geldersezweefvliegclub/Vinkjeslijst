@@ -1,4 +1,4 @@
-import {Injectable} from "@nestjs/common";
+import {Injectable, Logger} from "@nestjs/common";
 import {APIService, KeyValueArray} from "./api.service";
 import {StorageService} from "./storage.service";
 import {LoginService} from "./login.service";
@@ -6,6 +6,7 @@ import {LoginService} from "./login.service";
 
 @Injectable()
 export class LedenService {
+    private readonly logger = new Logger(LedenService.name);
     private ledenCache: any = undefined;     // return waarde van API call
 
     constructor(private readonly apiService: APIService,
@@ -34,7 +35,7 @@ export class LedenService {
             this.storageService.opslaan('vliegtuigen', this.ledenCache);
         } catch (e: any) {
             if ((e.responseCode !== 304) && (e.responseCode !== 704)) { // server bevat dezelfde starts als cache
-                console.error(`Exception in leden.service.getLeden: ${e}`);
+               this.logger.error(`Exception in leden.service.getLeden: ${e}`);
             }
         }
         return this.ledenCache?.dataset;

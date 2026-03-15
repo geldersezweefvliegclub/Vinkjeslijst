@@ -17,7 +17,7 @@ export class APIService {
 
     constructor() {
        const file = process.env.HELIOS_CREDENTIAL_FILE ? process.env.HELIOS_CREDENTIAL_FILE : HELIOS_CREDENTIAL_FILE;
-       console.log("HELIOS_CREDENTIAL_FILE:", file);
+       this.logger.log("HELIOS_CREDENTIAL_FILE:", file);
        const helios = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file,{encoding: 'utf8'})) : undefined
 
        if (!helios)
@@ -43,7 +43,7 @@ export class APIService {
         }
 
         const heliosUrl  = this.URL + url;
-        //this.logger.log(`GET ${heliosUrl}`);
+        this.logger.verbose(`GET ${heliosUrl}`);
 
         const response = await fetch(heliosUrl, {
             method: 'GET',

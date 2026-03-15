@@ -4,6 +4,7 @@ import {firstValueFrom, Observable} from 'rxjs';
 
 @Injectable()
 export class HeliosService {
+
   constructor(private readonly http: HttpService) {
   }
 

@@ -1,4 +1,4 @@
-import {HttpCode, HttpStatus, Injectable} from '@nestjs/common';
+import {HttpCode, HttpStatus, Injectable, Logger} from '@nestjs/common';
 import {GoogleService} from '../google/google.service';
 import {HeliosService} from '../helios/helios.service';
 import {VerwerkDto} from "./dto/verwerk.dto";
@@ -17,6 +17,8 @@ export interface myResponse
 @Injectable()
 export class VerwerkService
 {
+   private readonly logger = new Logger(VerwerkService.name);
+
    constructor(
       private readonly google: GoogleService,
       private readonly helios: HeliosService,
@@ -108,12 +110,12 @@ export class VerwerkService
          }
 
          const email = emailArray![row][0];
-         console.log(`cel: ${input.emailKolom}${row + 1}  email=${email}`);
+         this.logger.log(`cel: ${input.emailKolom}${row + 1}  email=${email}`);
 
          if (!email)
          {
             const msg = `Geen email op rij ${row+1}`
-            console.log(msg);
+            this.logger.warn(msg);
             response.details.push(msg);
             await this.google.setCell(input.spreadsheetId, tabTitle, input.statusKolom, row + 2, "Geen email");
             continue;
@@ -122,9 +124,8 @@ export class VerwerkService
          if (!emailRegex.test(email))
          {
             const msg = `Geen correct email adres op rij ${row + 1}`
-            console.log(msg);
             response.details.push(msg);
-            console.log(`Onjuist email formaat, cel:${input.emailKolom}${row + 1} :${email}`);
+            this.logger.warn(`Onjuist email formaat, cel:${input.emailKolom}${row + 1} :${email}`);
             continue;
          }
 
@@ -203,7 +204,7 @@ export class VerwerkService
             if (errorMsg)
             {
                await this.google.setCell(input.spreadsheetId, tabTitle, input.statusKolom, row + 2, errorMsg.msg);
-               console.log(errorMsg.log);
+               this.logger.error(errorMsg.log);
                response.details.push(errorMsg.log);
             }
             else
@@ -225,7 +226,7 @@ export class VerwerkService
          }
          catch (e)
          {
-            console.log(e)
+            this.logger.error(e)
          }
          await this.sleep(1000);
       }

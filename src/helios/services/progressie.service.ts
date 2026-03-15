@@ -1,4 +1,4 @@
-import {Injectable} from "@nestjs/common";
+import {Injectable, Logger} from "@nestjs/common";
 import {APIService, KeyValueArray} from "./api.service";
 import {StorageService} from "./storage.service";
 import {LoginService} from "./login.service";
@@ -6,6 +6,8 @@ import {LoginService} from "./login.service";
 
 @Injectable()
 export class ProgressieService {
+    private readonly logger = new Logger(ProgressieService.name);
+
     constructor(private readonly apiService: APIService,
                 private readonly loginService: LoginService,
                 private readonly storageService: StorageService) {}
@@ -26,7 +28,7 @@ export class ProgressieService {
             data = await response.json();
         } catch (e:any) {
             if ((e.responseCode !== 304) && (e.responseCode !== 704)) { // server bevat dezelfde starts als cache
-                console.error(`Exception in progressie.service.getLidProgressie: ${e}`);
+                this.logger.error(`Exception in progressie.service.getLidProgressie: ${e}`);
             }
         }
         return data ?  data?.dataset : undefined;
@@ -43,7 +45,7 @@ export class ProgressieService {
           return response.json();
        }
        catch (e) {
-           console.error(`Exception in Progressie.service.setProgressie: ${e}`);
+           this.logger.error(`Exception in Progressie.service.setProgressie: ${e}`);
        }
     }
 }
