@@ -16,7 +16,9 @@ export class LoginService  {
     constructor(private readonly apiService: APIService) { }
 
     async login(): Promise<boolean> {
-        const HeliosConfig = fs.existsSync(HELIOS_CREDENTIAL_FILE) ? JSON.parse(fs.readFileSync(HELIOS_CREDENTIAL_FILE,{encoding: 'utf8'})) : undefined
+        const file = process.env.HELIOS_CREDENTIAL_FILE ? process.env.HELIOS_CREDENTIAL_FILE : HELIOS_CREDENTIAL_FILE;
+
+        const HeliosConfig = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file,{encoding: 'utf8'})) : undefined
         const gebruikersnaam = HeliosConfig.username;
         const wachtwoord = HeliosConfig.password;
         const bypassToken = this.dayOfYear() + HeliosConfig.token;
