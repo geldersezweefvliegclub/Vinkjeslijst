@@ -173,7 +173,7 @@ export class VerwerkService
                   if (goed < input.minScore)
                   {
                      errorMsg = {
-                        log: `Score onvoldoende cel:${input.emailKolom}${row + 1} : ${statusArray![row][0]}`,
+                        log: `Score onvoldoende cel:${input.emailKolom}${row + 1} : ${scoreArray[row][0]}`,
                         msg: `Score onvoldoende`,
                      }
 

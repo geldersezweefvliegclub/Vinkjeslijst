@@ -1,13 +1,12 @@
 import { Module } from '@nestjs/common';
-import { VerwerkController } from './verwerk.controller';
 import { VerwerkService } from './verwerk.service';
+import { VerwerkScheduler } from './verwerk.scheduler';
 import { GoogleModule } from '../google/google.module';
 import { HeliosModule } from '../helios/helios.module';
 
 @Module({
   imports: [GoogleModule, HeliosModule],
-  controllers: [VerwerkController],
-  providers: [VerwerkService]
+  providers: [VerwerkService, VerwerkScheduler]
 })
-export class VerwerkModule
-{}
+export class VerwerkModule {}
+

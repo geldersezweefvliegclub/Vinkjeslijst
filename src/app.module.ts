@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
 import * as Joi from 'joi';
 import { VerwerkModule } from './verwerk/verwerk.module';
 import { GoogleModule } from './google/google.module';
@@ -10,11 +11,12 @@ import { HeliosModule } from './helios/helios.module';
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
-        PORT: Joi.number().default(3000),
         GOOGLE_CREDENTIALS: Joi.string().optional(),
-        GOOGLE_APPLICATION_CREDENTIALS: Joi.string().optional()
+        GOOGLE_APPLICATION_CREDENTIALS: Joi.string().optional(),
+        GOOGLE_SHEETS_CONFIG: Joi.string().required()
       })
     }),
+    ScheduleModule.forRoot(),
     GoogleModule,
     HeliosModule,
     VerwerkModule

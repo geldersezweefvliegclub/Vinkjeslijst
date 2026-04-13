@@ -32,7 +32,6 @@ export class LedenService {
         try {
             const response: Response = await this.apiService.get('Leden/GetObjects', getParams);
             this.ledenCache = await response.json();
-            this.storageService.opslaan('vliegtuigen', this.ledenCache);
         } catch (e: any) {
             if ((e.responseCode !== 304) && (e.responseCode !== 704)) { // server bevat dezelfde starts als cache
                this.logger.error(`Exception in leden.service.getLeden: ${e}`);

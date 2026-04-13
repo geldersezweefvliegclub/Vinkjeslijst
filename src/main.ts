@@ -1,14 +1,28 @@
 import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.createApplicationContext(AppModule);
+  const logger = new Logger('Application');
 
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
-  const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
-  await app.listen(port);
-  // eslint-disable-next-line no-console
+  logger.log('Application started as background worker');
+  logger.log('Scheduled task running every minute...');
+
+  // Keep the process alive
+  process.on('SIGINT', () => {
+    logger.log('Received SIGINT, shutting down gracefully...');
+    app.close();
+  });
+
+  process.on('SIGTERM', () => {
+    logger.log('Received SIGTERM, shutting down gracefully...');
+    app.close();
+  });
 }
-bootstrap();
+
+bootstrap().catch(err => {
+  console.error('Failed to start application:', err);
+  process.exit(1);
+});
