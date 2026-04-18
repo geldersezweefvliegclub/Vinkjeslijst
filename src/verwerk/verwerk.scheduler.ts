@@ -34,7 +34,9 @@ export class VerwerkScheduler {
     }
   }
 
-  @Cron(CronExpression.EVERY_MINUTE)
+  @Cron(process.env.CRON_VLUCHT_GEEN_MEDICAL || '* 6-23 * 1-10 *', {
+    timeZone: process.env.CRON_TIMEZONE || 'Europe/Amsterdam'
+  })
   async processProgressie() {
     if (!this.isInitialized || this.sheets.length === 0) {
       this.logger.warn('Scheduler not ready or no sheets configured');
