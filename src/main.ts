@@ -2,9 +2,12 @@ import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
 import { Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
+import {TwentyFourHourLogger} from "./twenty-four-hour-logger";
 
 async function bootstrap() {
-  const app = await NestFactory.createApplicationContext(AppModule);
+  const app = await NestFactory.createApplicationContext(AppModule, {
+    logger: new TwentyFourHourLogger(),
+  });
   const logger = new Logger('Application');
 
   logger.log('Application started as background worker');
