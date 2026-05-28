@@ -18,7 +18,7 @@ const createLogger = () => WinstonModule.createLogger({
      winston.format.json(),
   ),
   defaultMeta: {
-    Application: 'helios2email',
+    Application: 'vinkjeslijst',
     Instance: process.env.INSTANCE || 'Local',
     Environment: process.env.NODE_ENV || 'Local',
   },
