@@ -1,6 +1,5 @@
-import {HttpCode, HttpStatus, Injectable, Logger} from '@nestjs/common';
+import {HttpStatus, Injectable, Logger} from '@nestjs/common';
 import {GoogleService} from '../google/google.service';
-import {HeliosService} from '../helios/helios.service';
 import {VerwerkDto} from "./dto/verwerk.dto";
 import {ProgressieService} from "../helios/services/progressie.service";
 import * as fs from "node:fs";
@@ -21,7 +20,6 @@ export class VerwerkService
 
    constructor(
       private readonly google: GoogleService,
-      private readonly helios: HeliosService,
       private progessieService: ProgressieService
    )
    {
@@ -38,36 +36,30 @@ export class VerwerkService
 
       if (tabTitle === undefined)
       {
-         const response: myResponse =
-            {
-               code: HttpStatus.FAILED_DEPENDENCY.toString(),
-               bericht: 'Tabblad is onbekend',
-               details: ['tabTitle === undefined'],
-            }
-         return response;
+         return {
+            code: HttpStatus.FAILED_DEPENDENCY.toString(),
+            bericht: 'Tabblad is onbekend',
+            details: ['tabTitle === undefined'],
+         }
       }
 
       const rows: number = await this.google.getRows(input.spreadsheetId, tabTitle)
       if (rows === undefined)
       {
-         const response: myResponse =
-            {
-               code: HttpStatus.FAILED_DEPENDENCY.toString(),
-               bericht: 'Aantal rijen is onbekend',
-               details: ['rows === undefined'],
-            }
-         return response;
+         return {
+            code: HttpStatus.FAILED_DEPENDENCY.toString(),
+            bericht: 'Aantal rijen is onbekend',
+            details: ['rows === undefined'],
+         }
       }
 
       if (rows <= 1)    // rij 1 = headers
       {
-         const response: myResponse =
-            {
-               code: HttpStatus.CONTINUE.toString(),
-               bericht: 'Geen data te verwerken',
-               details: ['rows <= 1'],
-            }
-         return response;
+         return {
+            code: HttpStatus.CONTINUE.toString(),
+            bericht: 'Geen data te verwerken',
+            details: ['rows <= 1'],
+         }
       }
 
       const emailRange = `${input.emailKolom}2:${input.emailKolom}${rows}`;
@@ -75,13 +67,11 @@ export class VerwerkService
 
       if (emailArray === undefined)
       {
-         const response: myResponse =
-            {
-               code: HttpStatus.FAILED_DEPENDENCY.toString(),
-               bericht: 'Geen data te verwerken',
-               details: [`emailArray === undefined, range=${emailRange}`]
-            }
-         return response;
+         return {
+            code: HttpStatus.FAILED_DEPENDENCY.toString(),
+            bericht: 'Geen data te verwerken',
+            details: [`emailArray === undefined, range=${emailRange}`]
+         }
       }
 
       const statusRange = `${input.statusKolom}2:${input.statusKolom}${rows}`;
@@ -110,7 +100,7 @@ export class VerwerkService
          }
 
          const email = emailArray![row][0];
-         this.logger.log(`cel: ${input.emailKolom}${row + 1}  email=${email}`);
+         this.logger.verbose(`cel: ${input.emailKolom}${row + 1}  email=${email}`);
 
          if (!email)
          {
@@ -142,8 +132,8 @@ export class VerwerkService
                   msg: `Geen lid gevonden`
                }
                html = fs.readFileSync('./templates/geen-lid.html', 'utf8');
-               html = html.replaceAll(/\{base64img\}/g, base64img);
-               html = html.replaceAll(/\{naam\}/g, input.naam);
+               html = html.replaceAll(/\{base64img}/g, base64img);
+               html = html.replaceAll(/\{naam}/g, input.naam);
 
                break;
             }
@@ -161,9 +151,9 @@ export class VerwerkService
                   }
 
                   html = fs.readFileSync('./templates/al-gedaan.html', 'utf8');
-                  html = html.replaceAll(/\{base64img\}/g, base64img);
-                  html = html.replaceAll(/\{naam\}/g, input.naam);
-                  html = html.replaceAll(/\{id\}/g, progressie[idx].ID);
+                  html = html.replaceAll(/\{base64img}/g, base64img);
+                  html = html.replaceAll(/\{naam}/g, input.naam);
+                  html = html.replaceAll(/\{id}/g, progressie[idx].ID);
                }
                else if (scoreArray && scoreArray![row]) // controleer of de scoore voldoende is
                {
@@ -178,10 +168,10 @@ export class VerwerkService
                      }
 
                      html = fs.readFileSync('./templates/onvoldoende.html', 'utf8');
-                     html = html.replaceAll(/\{base64img\}/g, base64img);
-                     html = html.replaceAll(/\{naam\}/g, input.naam);
-                     html = html.replaceAll(/\{goed\}/g, score);
-                     html = html.replaceAll(/\{goed\}/g, max);
+                     html = html.replaceAll(/\{base64img}/g, base64img);
+                     html = html.replaceAll(/\{naam}/g, input.naam);
+                     html = html.replaceAll(/\{goed}/g, score);
+                     html = html.replaceAll(/\{goed}/g, max);
                   }
                }
                break;
@@ -194,8 +184,8 @@ export class VerwerkService
                }
 
                html = fs.readFileSync('./templates/meerdere-leden.html', 'utf8');
-               html = html.replaceAll(/\{base64img\}/g, base64img);
-               html = html.replaceAll(/\{naam\}/g, input.naam);
+               html = html.replaceAll(/\{base64img}/g, base64img);
+               html = html.replaceAll(/\{naam}/g, input.naam);
             }
          }
 
@@ -214,12 +204,14 @@ export class VerwerkService
                const record = await this.progessieService.setProgressie(lid[0].ID, input.competentie)
                await this.google.setCell(input.spreadsheetId, tabTitle, input.statusKolom, row + 2, "ID=" + record.ID);
 
-               response.details.push(`progressie gezet ${email} ${record.ID}`);
+               const i = `progressie gezet ${email} ${record.ID}`
+               response.details.push(i);
+               this.logger.log(i);
 
                html = fs.readFileSync('./templates/success.html', 'utf8');
-               html = html.replaceAll(/\{base64img\}/g, base64img);
-               html = html.replaceAll(/\{naam\}/g, input.naam);
-               html = html.replaceAll(/\{id\}/g, record.ID);
+               html = html.replaceAll(/\{base64img}/g, base64img);
+               html = html.replaceAll(/\{naam}/g, input.naam);
+               html = html.replaceAll(/\{id}/g, record.ID);
             }
 
             await this.google.sendEmail({to: email, subject: input.naam, bodyText: html})

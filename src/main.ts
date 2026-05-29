@@ -12,7 +12,7 @@ import {SeqTransport} from "@datalust/winston-seq";
  * Allows for logging to multiple transports, such as the console and Seq, or modifying the log format.
  */
 const createLogger = () => WinstonModule.createLogger({
-  level: 'debug',
+  level: process.env.LOGGER_LEVEL || 'info',
   format: winston.format.combine(   /* This is required to get errors to log with stack traces. See https://github.com/winstonjs/winston/issues/1498 */
      winston.format.errors({stack: true}),
      winston.format.json(),

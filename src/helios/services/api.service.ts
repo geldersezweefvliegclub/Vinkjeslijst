@@ -1,5 +1,3 @@
-
-import {ConfigService} from "@nestjs/config";
 import {HttpException, HttpStatus, Injectable, Logger} from "@nestjs/common";
 import fs from "node:fs";
 
@@ -7,7 +5,7 @@ export const HELIOS_CREDENTIAL_FILE = "helios.account.json";
 
 export interface KeyValueArray {
    [key: string]: string | number | boolean
-};
+}
 
 @Injectable()
 export class APIService {
@@ -43,7 +41,7 @@ export class APIService {
         }
 
         const heliosUrl  = this.URL + url;
-        this.logger.verbose(`GET ${heliosUrl}`);
+        this.logger.debug(`GET ${heliosUrl}`);
 
         const response = await fetch(heliosUrl, {
             method: 'GET',
