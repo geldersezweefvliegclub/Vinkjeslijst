@@ -23,7 +23,6 @@ const createLogger = () => WinstonModule.createLogger({
     Environment: process.env.NODE_ENV || 'Local',
   },
   transports: [
-    // log everything to the console
     new winston.transports.Console({
       format: winston.format.combine(
          winston.format.colorize({
@@ -32,15 +31,15 @@ const createLogger = () => WinstonModule.createLogger({
          winston.format.simple(),
       ),
     }),
-    new SeqTransport({
-      serverUrl: process.env.LOGGER_SERVER_URL || 'http://localhost:5341',
+    ...(process.env.LOGGER_SERVER_URL ? [new SeqTransport({
+      serverUrl: process.env.LOGGER_SERVER_URL,
       apiKey: process.env.LOGGER_API_KEY,
       onError: ((e: Error) => {
         console.error(e);
       }),
       handleExceptions: true,
       handleRejections: true,
-    }),
+    })] : []),
   ],
 });
 
