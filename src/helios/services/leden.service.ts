@@ -4,10 +4,13 @@ import {StorageService} from "./storage.service";
 import {LoginService} from "./login.service";
 
 
+const REFRESH_INTERVAL_MS = 60 * 60 * 1000; // 1 hour
+
 @Injectable()
 export class LedenService {
     private readonly logger = new Logger(LedenService.name);
     private ledenCache: any = undefined;     // return waarde van API call
+    private lastFullRefresh: number = 0;
 
     constructor(private readonly apiService: APIService,
                 private readonly loginService: LoginService,
@@ -25,13 +28,20 @@ export class LedenService {
             return (this.ledenCache === undefined) ? this.ledenCache?.dataset  : [];
         }
 
-        if ((this.ledenCache != undefined)  && (this.ledenCache.hash != undefined)) { // we hebben eerder de lijst opgehaald
-           getParams['HASH'] = this.ledenCache.hash
+        const now = Date.now();
+        const includeHash = (now - this.lastFullRefresh) < REFRESH_INTERVAL_MS;
+
+        if (includeHash) {   // ieder uur altijd volledig ophalen, anders alleen als hash is veranderd
+           if ((this.ledenCache != undefined) && (this.ledenCache.hash != undefined)) // we hebben eerder de lijst opgehaald
+           {
+              getParams['HASH'] = this.ledenCache.hash
+           }
         }
 
         try {
             const response: Response = await this.apiService.get('Leden/GetObjects', getParams);
             this.ledenCache = await response.json();
+            if (!includeHash) this.lastFullRefresh = now;
         } catch (e: any) {
             if ((e.responseCode !== 304) && (e.responseCode !== 704)) { // server bevat dezelfde starts als cache
                this.logger.error(`Exception in leden.service.getLeden: ${e}`);
