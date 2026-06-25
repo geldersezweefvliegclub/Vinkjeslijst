@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { Cron } from '@nestjs/schedule';
 import { VerwerkDto } from './dto/verwerk.dto';
 import { myResponse, VerwerkService } from './verwerk.service';
 import fs from 'node:fs';
@@ -34,7 +34,7 @@ export class VerwerkScheduler {
     }
   }
 
-  @Cron(process.env.CRON_VLUCHT_GEEN_MEDICAL || '* 6-23 * 1-10 *', {
+  @Cron(process.env.CRON_TRIGGER || '*/15 6-23 * 1-10 *', {
     timeZone: process.env.CRON_TIMEZONE || 'Europe/Amsterdam'
   })
   async processProgressie() {
